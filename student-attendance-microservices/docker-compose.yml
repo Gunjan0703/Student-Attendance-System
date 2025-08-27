@@ -1,0 +1,49 @@
+version: "3.8"
+
+services:
+  mysql:
+    image: mysql:8
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: attendancemsystem
+      MYSQL_USER: attendance_user
+      MYSQL_PASSWORD: attendance_pass
+    volumes:
+      - mysql-data:/var/lib/mysql
+
+  frontend:
+    build: ./student-attendance-frontend
+    container_name: frontend
+    ports:
+      - "8080:80"
+    depends_on:
+      - backend
+
+  backend:
+    build: ./student-attendance-backend
+    container_name: backend-service
+    restart: unless-stopped
+    env_file:
+      - ./student-attendance-backend/.env
+    ports:
+      - "8000:80"
+    depends_on:
+      - mysql
+
+  student-management-service:
+    build:
+      context: ./student-management-service
+      dockerfile: Dockerfile
+    container_name: student_management_service
+    restart: unless-stopped
+    env_file:
+      - ./student-management-service/.env   # create this file with DB_HOST etc.
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mysql
+
+volumes:
+  mysql-data:
