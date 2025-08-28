@@ -11,13 +11,7 @@ services:
       MYSQL_USER: attendance_user
       MYSQL_PASSWORD: attendance_pass
     volumes:
-      - ./infrastructure/mysql/attendancemsystem.sql:/docker-entrypoint-initdb.d/attendancemsystem.sql
       - mysql-data:/var/lib/mysql
-    healthcheck:
-      test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-uattendance_user", "-pattendance_pass"]
-      interval: 10s
-      timeout: 5s
-      retries: 5
 
   frontend:
     build: ./student-service/student-attendance-frontend
@@ -43,8 +37,7 @@ services:
     container_name: student-management-service
     restart: always
     depends_on:
-      mysql:
-        condition: service_healthy
+      - mysql
     environment:
       DB_HOST: mysql
       MYSQL_USER: attendance_user
@@ -53,10 +46,9 @@ services:
     ports:
       - "3001:3001"
 
-  # The container name has been changed to "management-frontend" to avoid conflict.
-  management-frontend:
+  student-frontend:
     build: ./management-service/student-frontend
-    container_name: management-frontend
+    container_name: student-frontend
     restart: always
     depends_on:
       - student-management-service
@@ -69,8 +61,9 @@ services:
     ports:
       - "80:80"
     depends_on:
-      - management-frontend
+      - student-frontend
       - student-management-service
+
 
 volumes:
   mysql-data:
