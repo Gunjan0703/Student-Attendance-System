@@ -22,8 +22,10 @@ SET time_zone = "+00:00";
 --
 
 -- --------------------------------------------------------
-GRANT ALL PRIVILEGES ON `attendancemsystem`.* TO 'attendance_username'@'%' IDENTIFIED BY 'attendance_pass';
+CREATE USER IF NOT EXISTS 'attendance_user'@'%' IDENTIFIED BY 'attendance_pass';
+GRANT ALL PRIVILEGES ON attendancemsystem.* TO 'attendance_user'@'%';
 FLUSH PRIVILEGES;
+
 
 --
 -- Table structure for table `tbladmin`

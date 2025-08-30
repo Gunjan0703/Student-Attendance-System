@@ -8,6 +8,9 @@ use Psr\Http\Server\RequestHandlerInterface as RequestHandler;
 use Firebase\JWT\JWT;
 use Firebase\JWT\Key;
 
+$dotenv = Dotenv\Dotenv::createImmutable(__DIR__ . '/../');
+$dotenv->load();
+
 // Create App
 $app = AppFactory::create();
 $app->addBodyParsingMiddleware();
@@ -21,7 +24,7 @@ function getDB() {
     $pass = $_ENV['MYSQL_PASSWORD'];
     $charset = 'utf8mb4';
 
-    $dsn = "mysql:host=mysql;dbname=attendancemsystem;charset=$charset";
+    $dsn = "mysql:host=$host;dbname=$db;charset=$charset";
     $options = [
         PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
@@ -134,4 +137,5 @@ $app->get('/attendance', function(Request $request, Response $response) {
     return $response->withHeader('Content-Type', 'application/json');
 })->add($jwtMiddleware);
 
-$app->run();
+$app->run(new Slim\Psr7\ResponseEmitter(), \Slim\Factory\ServerRequestCreatorFactory::create());
+

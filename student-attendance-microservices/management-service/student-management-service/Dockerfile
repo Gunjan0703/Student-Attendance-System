@@ -1,26 +1,55 @@
-FROM node:18.20-alpine
+# =========================
+# Stage 1: Build
+# =========================
+FROM node:18.20-alpine AS build
 
-RUN apk add --no-cache dumb-init
-
+# Set working directory
 WORKDIR /app
 
+# Copy package files first for caching
 COPY package*.json ./
 
-RUN npm ci --only=production && npm cache clean --force
+# Install production dependencies
+# Use npm install instead of npm ci to avoid lockfile issues
+RUN npm install --only=production && npm cache clean --force
 
+# Copy application source code
 COPY . .
 
-RUN addgroup -g 1001 -S nodejs \
-    && adduser -S studentmgmt -u 1001 -G nodejs \
-    && chown -R studentmgmt:nodejs /app
+# =========================
+# Stage 2: Production
+# =========================
+FROM node:18.20-alpine
 
+# Install dumb-init for proper signal handling
+RUN apk add --no-cache dumb-init
+
+# Create non-root user and group
+RUN addgroup -g 1001 -S nodejs \
+    && adduser -S studentmgmt -u 1001 -G nodejs
+
+# Set working directory
+WORKDIR /app
+
+# Copy built application from build stage
+COPY --from=build /app /app
+
+# Set permissions
+RUN chown -R studentmgmt:nodejs /app
+
+# Switch to non-root user
 USER studentmgmt
 
+# Expose application port
 EXPOSE 3001
 
-HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node healthcheck.js || exit 1
+# Optional healthcheck
+HEALTHCHECK --interval=30s --timeout=5s --start-period=30s --retries=3 \
+  CMD node /app/healthcheck.js
 
+# Use dumb-init to handle PID 1 correctly
 ENTRYPOINT ["dumb-init", "--"]
 
+# Start the application
 CMD ["node", "server.js"]
+

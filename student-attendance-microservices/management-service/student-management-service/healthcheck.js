@@ -1,10 +1,11 @@
-const http = require('http');
+const http = require("http");
 
 const options = {
-  hostname: 'localhost',
+  hostname: "127.0.0.1",   // Force IPv4
   port: 3001,
-  path: '/health',
-  method: 'GET'
+  path: "/health",
+  method: "GET",
+  timeout: 200
 };
 
 const req = http.request(options, (res) => {
@@ -15,7 +16,9 @@ const req = http.request(options, (res) => {
   }
 });
 
-req.on('error', () => {
+req.on("error", () => process.exit(1));
+req.on("timeout", () => { 
+  req.destroy();
   process.exit(1);
 });
 
