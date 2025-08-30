@@ -1,10 +1,9 @@
-FROM php:8.1-apache
+FROM php:8.1.23-apache-slim
 
-# Enable Apache mods
-RUN docker-php-ext-install mysqli pdo pdo_mysql
+RUN docker-php-ext-install mysqli pdo pdo_mysql opcache
 
-# Copy source code
-#COPY . /var/www/html/
-COPY --chown=www-data:www-data . /var/www/html/
+WORKDIR /var/www/html
 
-EXPOSE 80
+COPY --chown=www-data:www-data . .
+
+USER www-data

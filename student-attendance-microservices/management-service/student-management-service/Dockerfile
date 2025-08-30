@@ -1,32 +1,26 @@
-FROM node:18-alpine
+FROM node:18.20-alpine
 
-# Install dumb-init
 RUN apk add --no-cache dumb-init
 
 WORKDIR /app
 
-# Create non-root user
-RUN addgroup -g 1001 -S nodejs && adduser -S studentmgmt -u 1001
-
-# Copy package files
 COPY package*.json ./
-RUN npm install --production && npm cache clean --force\
-    npm install sequelize@latest\
-    npm install mysql2@latest
 
+RUN npm ci --only=production && npm cache clean --force
 
-# Copy source code
 COPY . .
 
-# Set proper permissions
-RUN chown -R studentmgmt:nodejs /app
+RUN addgroup -g 1001 -S nodejs \
+    && adduser -S studentmgmt -u 1001 -G nodejs \
+    && chown -R studentmgmt:nodejs /app
+
 USER studentmgmt
 
 EXPOSE 3001
 
-# Health check
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s --retries=3 \
-  CMD node healthcheck.js
+  CMD node healthcheck.js || exit 1
 
-#ENTRYPOINT ["dumb-init", "--"]
+ENTRYPOINT ["dumb-init", "--"]
+
 CMD ["node", "server.js"]
