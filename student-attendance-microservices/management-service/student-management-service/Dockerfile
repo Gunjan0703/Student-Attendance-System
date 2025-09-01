@@ -11,7 +11,7 @@ COPY package*.json ./
 
 # Install production dependencies
 # Use npm install instead of npm ci to avoid lockfile issues
-RUN npm install --only=production && npm cache clean --force
+RUN npm ci --only=production && npm cache clean --force
 
 # Copy application source code
 COPY . .
