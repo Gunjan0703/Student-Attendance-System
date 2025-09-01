@@ -1,0 +1,50 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: student-backend
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: student-backend
+  template:
+    metadata:
+      labels:
+        app: student-backend
+    spec:
+      containers:
+      - name: student-backend
+        image: gunjan1603/student-backend:latest
+        ports:
+        - containerPort: 80
+        env:
+        - name: DB_HOST
+          value: mysql
+        - name: MYSQL_NAME
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_DATABASE
+        - name: MYSQL_USER
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_USER
+        - name: MYSQL_PASSWORD
+          valueFrom:
+            secretKeyRef:
+              name: mysql-secret
+              key: MYSQL_PASSWORD
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: student-backend
+spec:
+  type: ClusterIP
+  selector:
+    app: student-backend
+  ports:
+  - port: 8000
+    targetPort: 80
+
