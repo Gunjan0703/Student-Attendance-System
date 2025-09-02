@@ -16,7 +16,7 @@ spec:
       - name: student-backend
         image: gunjan1603/student-backend:latest
         ports:
-        - containerPort: 80
+        - containerPort: 8000
         env:
         - name: DB_HOST
           value: mysql
@@ -35,6 +35,13 @@ spec:
             secretKeyRef:
               name: mysql-secret
               key: MYSQL_PASSWORD
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
 ---
 apiVersion: v1
 kind: Service
@@ -46,5 +53,5 @@ spec:
     app: student-backend
   ports:
   - port: 8000
-    targetPort: 80
+    targetPort: 8000
 
