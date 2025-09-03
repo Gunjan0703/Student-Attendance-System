@@ -6,7 +6,7 @@ if (!isset($_SESSION['jwt'])) {
 }
 
 $jwt = $_SESSION['jwt'];
-$url = "http://backend:8000/students";
+$url = "http://student-backend:8000/students";
 
 $options = [
     "http" => [

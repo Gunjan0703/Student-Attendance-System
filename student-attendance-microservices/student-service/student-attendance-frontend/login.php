@@ -4,7 +4,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
 
-    $url = "http://backend:8000/login";  // backend container name from docker-compose
+    $url = "http://student-backend:8000/login";  // backend container name from docker-compose
     $data = json_encode(["email" => $email, "password" => $password]);
 
     $options = [
