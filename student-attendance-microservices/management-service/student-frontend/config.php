@@ -7,7 +7,7 @@ define('API_BASE_URL', 'http://student-management-service:3001'); // Change to y
 define('API_TIMEOUT', 30); // API request timeout in seconds
 
 // Database Configuration (for PHP authentication only)
-define('DB_HOST', 'student-attendance-microservices-mysql-1');
+define('DB_HOST', 'mysql');
 define('MYSQL_NAME', 'attendancemsystem');
 define('MYSQL_USER', 'attendance_user');
 define('MYSQL_PASS', 'attendance_pass');
