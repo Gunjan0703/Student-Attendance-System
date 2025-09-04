@@ -7,15 +7,14 @@ metadata:
 spec:
   ingressClassName: nginx
   rules:
-    - host: student.local
-      http:
+    - http:
         paths:
           - path: /
             pathType: Prefix
             backend:
               service:
                 name: management-frontend
-                por
+                port:
                   number: 80
           - path: /students
             pathType: Prefix
