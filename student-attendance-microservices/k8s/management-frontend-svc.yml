@@ -16,17 +16,24 @@ spec:
       - name: management-frontend
         image: gunjan1603/management-frontend:latest
         ports:
-        - containerPort: 8080
+        - containerPort: 80
+        resources:
+          requests:
+            cpu: "200m"
+            memory: "256Mi"
+          limits:
+            cpu: "1"
+            memory: "1Gi"
         readinessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 80
           initialDelaySeconds: 5
           periodSeconds: 10
         livenessProbe:
           httpGet:
             path: /
-            port: 8080
+            port: 80
           initialDelaySeconds: 15
           periodSeconds: 20
 ---
@@ -40,6 +47,5 @@ spec:
     app: management-frontend
   ports:
   - port: 80
-    targetPort: 8080
+    targetPort: 80
     nodePort: 30002
-

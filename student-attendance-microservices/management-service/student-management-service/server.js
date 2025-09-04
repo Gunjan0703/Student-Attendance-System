@@ -9,10 +9,10 @@ const PORT = process.env.PORT || 3001;
 
 // Database configuration using existing database
 const dbConfig = {
-    host: process.env.DB_HOST || 'localhost',
+    host: process.env.DB_HOST || 'mysql',
     port: process.env.DB_PORT || 3306,
-    user: process.env.MYSQL_USER || 'root',
-    password: process.env.MYSQL_PASSWORD || '',
+    user: process.env.MYSQL_USER || 'attendance_user',
+    password: process.env.MYSQL_PASSWORD || ' attendance_pass',
     database: process.env.MYSQL_NAME || 'attendancemsystem',
     charset: 'utf8mb4',
     acquireTimeout: 60000,
