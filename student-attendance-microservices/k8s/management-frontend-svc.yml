@@ -15,8 +15,23 @@ spec:
       containers:
       - name: management-frontend
         image: gunjan1603/management-frontend:latest
+        securityContext:
+          capabilities:
+            add: ["NET_BIND_SERVICE"]
         ports:
-        - containerPort: 80
+        - containerPort: 8080
+        readinessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+        livenessProbe:
+          httpGet:
+            path: /
+            port: 8080
+          initialDelaySeconds: 15
+          periodSeconds: 20
 ---
 apiVersion: v1
 kind: Service
@@ -28,6 +43,6 @@ spec:
     app: management-frontend
   ports:
   - port: 80
-    targetPort: 80
+    targetPort: 8080
     nodePort: 30002
 
